@@ -6,7 +6,7 @@ ___________
 -	besedilo
 -	dolžino člankov
 -	število slik
--	število povezav na druge članke  samem besedilu Wikipedije
+-	število povezav na druge članke v samem besedilu Wikipedije
 -	število zunanjih virov
 
 _Pri besedilu bom pozoren tudi na razlike med jeziki, ki so porabljeni v članku glede na frekvenčna porazdelitev črk in besed ter dolžina stavkov in povedi._
