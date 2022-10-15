@@ -3,8 +3,7 @@
 Analiziral bom članke [Wikipedije](https://www.wikipedia.org/) v različnih Evropskih jezikih.
 ___________
 ### V člankih bom zajel:
--	besedilo
--	dolžino člankov
+-	besedilo (dolžino člankov in drugo)
 -	število slik
 -	število povezav na druge članke v samem besedilu Wikipedije
 -	število zunanjih virov
