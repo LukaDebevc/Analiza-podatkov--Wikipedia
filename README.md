@@ -15,3 +15,11 @@ _____________
 -	Predvidevam, da bodo članki veliko daljši, meli več slik in hiperpovezav v jezikih z večjim številom naravnih govorcev.
 -	Ali imajo članki v različnih jezikih različno frekvenčno porazdelitev besed in črk in ali so v teh aspektih jeziki bolj podobni če imajo skupni izvor?
 -	Ali lahko predvidimo jezik v katerem je bil članek napisan na podlagi zajetih podatkov?
+
+_______________
+### Podatki:
+-   Podatki se nahajajo v **podatki.csv**,
+-   ločeni so ločeni z **¤** in
+-   so oblike **jezik**¤**povezave**¤**besedilo**.
+
+*Pod povezave je mišljeno število hiperpovezav na druge članke v istem jeziku.*
