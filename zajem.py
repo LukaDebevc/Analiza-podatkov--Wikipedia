@@ -29,15 +29,6 @@ class Stran:
         naslov = re.findall(r">([\w ]*) -", str(soup.title))
         if len(naslov) == 1: return naslov[0]
         else: self.ustreza = False
-
-    # def besedilo_(self, soup, html_strani):
-    #     li = jezikovni_slovar[self.jezik]["besede"]
-    #     if li[0] == "": 
-    #         soup = BeautifulSoup(re.findall(r"parser[\s\S]*?(<p>[\s\S]+)", html_strani)[0], 'html.parser')
-    #         print(type(soup.text), soup.text)
-    #     besedilo = re.findall(fr"{li[0]}([\s\S]*?)({'|'.join([i for i in li[1:]])})", str(soup.text))
-    #     if len(besedilo) == 1: return besedilo[0][0]
-    #     else: self.ustreza = False; print("besedilo ne ustreza", [print(nu,"\n",i, "\n") for nu, i in enumerate(besedilo)])
     
     def besedilo_(self, html_strani):
         if len(izlusceno_besedilo := re.findall(r"parser[\s\S]*?(<p>[\s\S]+<\/p>)", html_strani)) != 1: self.ustreza = False
@@ -55,8 +46,6 @@ class Stran:
 
     def json(self):
         return [self.povezava, self.jezik, self.besedilo, self.hiperpovezave]
-        # return [self.povezava, self.jezik, self.naslov, self.besedilo, self.hiperpovezave]
-
 
 def dodaj_jezik(jezik:str, zacetna_povezava:str, kljucne_besede:list):
     if jezikovni_slovar.get(jezik, "se_ne_obstaja") == "se_ne_obstaja":

@@ -1,6 +1,7 @@
 # vsebuje pomozne funkcije za analizo podatkov
 import random
 import numpy as np
+import pandas as pd
 
 
 def num_of_spaces(clanek):
@@ -63,7 +64,7 @@ def scores_array(lookup_dict, n, text):
     scores = np.ones(40)
     for seq, count in seen_dict.items():
         if seq in lookup_dict:
-            scores *= (1 / ((3 + n) * len(text)) + lookup_dict[seq]) ** (count / len(text))
+            scores += (1 / ((3 + n) * len(text)) + lookup_dict[seq]) ** (count / len(text))
     return scores
 
 
@@ -114,4 +115,5 @@ def wrap_testing(df, ns, look_up_sample_size, test_sample_size):
     shuffle_map(map_lang_to_texts)
     sample, test_map = split_off(map_lang_to_texts, sample_size=look_up_sample_size)
     probability_dicts, language_to_int = create_probability_dicts(sample, ns=ns)
-    return test(probability_dicts, language_to_int, test_map, ns, test_sample_size)
+    success = test(probability_dicts, language_to_int, test_map, ns, test_sample_size)
+    return pd.DataFrame([(lang, success[index]) for lang, index in language_to_int.items()], columns=["Jezik", "Delež pravilno klasificiranih"])
