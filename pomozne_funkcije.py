@@ -2,10 +2,33 @@
 import random
 import numpy as np
 import pandas as pd
+from math import gcd
+from functools import reduce
+
+def lcm(a, b):
+    return a * b // gcd(a, b)
+
+def lcmm(*args):
+    return reduce(lcm, args)
 
 
-def num_of_spaces(clanek):
-    return clanek.count(" ")
+def num_of_spaces(text):
+    return text.count(" ") + text.count("\n")
+
+def avg_word_len(text):
+    chars = 0
+    words = 1
+    empty = True
+    for i in text:
+        if i.isalnum():
+            empty = False
+            chars += 1
+        else:
+            if not empty:
+                empty = True
+                words += 1
+    return (chars / words)
+
 
 
 def extract(df):
@@ -64,6 +87,7 @@ def scores_array(lookup_dict, n, text):
     scores = np.ones(40)
     for seq, count in seen_dict.items():
         if seq in lookup_dict:
+            # tu bi bilo bolj smiselno *= kot += vendar += daje boljše rezulate
             scores += (1 / ((3 + n) * len(text)) + lookup_dict[seq]) ** (count / len(text))
     return scores
 
@@ -117,3 +141,126 @@ def wrap_testing(df, ns, look_up_sample_size, test_sample_size):
     probability_dicts, language_to_int = create_probability_dicts(sample, ns=ns)
     success = test(probability_dicts, language_to_int, test_map, ns, test_sample_size)
     return pd.DataFrame([(lang, success[index]) for lang, index in language_to_int.items()], columns=["Jezik", "Delež pravilno klasificiranih"])
+
+# __________________________________________________________________
+
+
+def letter_frequency(texts):
+    frequency = {}
+    total_letters = 0
+    for text in texts:
+        for letter in text:
+            if letter.isalpha():
+                total_letters += 1
+                if letter in frequency:
+                    frequency[letter] += 1
+                else:
+                    frequency[letter] = 1
+    for letter in frequency:
+        frequency[letter] /= total_letters
+    return frequency
+
+
+def word_frequency(text_list):
+    word_counts = {}
+    for text in text_list:
+        words = text.split()
+        for word in words:
+            if word in word_counts:
+                word_counts[word] += 1
+            else:
+                word_counts[word] = 1
+    return word_counts
+
+
+def frequency_dict_to_list(frequency):
+    frequency_list = []
+    for letter, count in frequency.items():
+        frequency_list.append(count)
+    return frequency_list
+
+def calculate_difference(list1, list2):
+    length = lcmm(len(list1), len(list2))
+    new_list1 = np.array([list1[i % len(list1)] for i in range(length)])
+    new_list2 = np.array([list2[i % len(list2)] for i in range(length)])
+    area = np.trapz(np.abs(new_list2 - new_list1), np.array(range(length)))
+    return area
+
+
+def resample_list(lst, n):
+    m = len(lst)
+    step = m / n
+    new_lst = []
+    for i in range(n):
+        x = i * step
+        start = int(np.floor(x))
+        end = int(np.ceil(x + step))
+        values = lst[start:end]
+        avg = sum(values) / len(values)
+        new_lst.append(avg)
+    return new_lst
+
+
+def append_lists(a, b):
+    if b:
+        len_a = len(a)
+        len_b = len(b[0])
+        max_len = max(len_a, len_b)
+        a += [0] * (max_len - len_a)
+        b = [item + [0] * (max_len - len_b) for item in b]
+    return [a] + b
+
+
+def letter_frequency_destribution(df):
+    acc = []
+    extracted = extract(df)
+    lang_to_int = grup_by_lang(extracted)
+    for lang, texts in lang_to_int.items():
+        acc = append_lists(sorted(frequency_dict_to_list(letter_frequency(texts)), reverse=True), acc)
+
+    re = []
+    for i, (lang, texts) in enumerate(lang_to_int.items()):
+        re.append((lang, acc[i]))
+    return re
+
+
+def improved_letter_frequency(texts):
+    frequency = {}
+    total_letters = 0
+    for text in texts:
+        for letter in text.lower():
+            if letter.isalpha():
+                total_letters += 1
+                if letter in frequency:
+                    frequency[letter] += 1
+                else:
+                    frequency[letter] = 1
+    for letter in frequency:
+        frequency[letter] /= total_letters
+    return frequency
+
+
+def improved_letter_frequency_destribution(df):
+    acc = []
+    extracted = extract(df)
+    lang_to_int = grup_by_lang(extracted)
+    for lang, texts in lang_to_int.items():
+        acc = append_lists(sorted(frequency_dict_to_list(improved_letter_frequency(texts)), reverse=True)[:40], acc)
+
+    re = []
+    for i, (lang, texts) in enumerate(lang_to_int.items()):
+        re.append((lang, acc[i]))
+    return re
+
+
+def improved_word_frequency_destribution(df):
+    acc = []
+    extracted = extract(df)
+    lang_to_int = grup_by_lang(extracted)
+    for lang, texts in lang_to_int.items():
+        acc = append_lists(sorted(frequency_dict_to_list(word_frequency(texts)), reverse=True)[:1000], acc)
+
+    re = []
+    for i, (lang, texts) in enumerate(lang_to_int.items()):
+        re.append((lang, acc[i]))
+    return re
