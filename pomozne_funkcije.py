@@ -30,6 +30,13 @@ def avg_word_len(text):
     return (chars / words)
 
 
+def average_word_length_2(text):
+    words = text.split()
+    unique_words = set(words)
+    total_length = sum([len(''.join([i for i in word if i.isalnum()])) for word in unique_words])
+    average_length = (total_length + 5.3) / (len(unique_words) + 1)
+    return average_length
+
 
 def extract(df):
     return list(zip(df["jezik"], df["besedilo"]))
@@ -162,15 +169,19 @@ def letter_frequency(texts):
 
 
 def word_frequency(text_list):
-    word_counts = {}
+    frequency = {}
+    total_words = 0
     for text in text_list:
         words = text.split()
         for word in words:
-            if word in word_counts:
-                word_counts[word] += 1
+            total_words += 1
+            if word in frequency:
+                frequency[word] += 1
             else:
-                word_counts[word] = 1
-    return word_counts
+                frequency[word] = 1
+    for words in frequency:
+        frequency[words] /= total_words
+    return frequency
 
 
 def frequency_dict_to_list(frequency):
@@ -208,19 +219,19 @@ def append_lists(a, b):
         max_len = max(len_a, len_b)
         a += [0] * (max_len - len_a)
         b = [item + [0] * (max_len - len_b) for item in b]
-    return [a] + b
+    
+    b.append(a)
+    return b
 
 
 def letter_frequency_destribution(df):
     acc = []
+    re = []
     extracted = extract(df)
     lang_to_int = grup_by_lang(extracted)
     for lang, texts in lang_to_int.items():
         acc = append_lists(sorted(frequency_dict_to_list(letter_frequency(texts)), reverse=True), acc)
-
-    re = []
-    for i, (lang, texts) in enumerate(lang_to_int.items()):
-        re.append((lang, acc[i]))
+        re.append((lang, acc[-1]))
     return re
 
 
@@ -242,25 +253,24 @@ def improved_letter_frequency(texts):
 
 def improved_letter_frequency_destribution(df):
     acc = []
+    re = []
     extracted = extract(df)
     lang_to_int = grup_by_lang(extracted)
     for lang, texts in lang_to_int.items():
         acc = append_lists(sorted(frequency_dict_to_list(improved_letter_frequency(texts)), reverse=True)[:40], acc)
-
-    re = []
-    for i, (lang, texts) in enumerate(lang_to_int.items()):
-        re.append((lang, acc[i]))
+        re.append((lang, acc[-1]))
     return re
 
 
-def improved_word_frequency_destribution(df):
+def improved_word_frequency_destribution(df, n, words=False):
     acc = []
+    re = []
     extracted = extract(df)
     lang_to_int = grup_by_lang(extracted)
     for lang, texts in lang_to_int.items():
-        acc = append_lists(sorted(frequency_dict_to_list(word_frequency(texts)), reverse=True)[:1000], acc)
-
-    re = []
-    for i, (lang, texts) in enumerate(lang_to_int.items()):
-        re.append((lang, acc[i]))
+        if not words:
+            acc = append_lists(sorted(frequency_dict_to_list(word_frequency([text.lower() for text in texts])), reverse=True)[:n], acc)
+        if words:
+            acc = append_lists(sorted(word_frequency([text.lower() for text in texts]).items(), key= lambda x: x[1], reverse=True)[:n], acc)
+        re.append((lang, acc[-1]))
     return re

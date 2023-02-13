@@ -11,7 +11,8 @@ _Pri besedilu bom pozoren tudi na razlike med jeziki, ki so porabljeni v članku
 _____________
 ### Delovne hipoteze:
 -	Predvidevam, da bodo članki veliko daljši, meli več hiperpovezav v jezikih z večjim številom naravnih govorcev.
--	Ali imajo članki v različnih jezikih različno frekvenčno porazdelitev besed in črk in ali so v teh aspektih jeziki bolj podobni če imajo skupni izvor?
+-   Predvidevam, da so krajše besede pogosteje uporabljene kot daljše.
+-	Ali imajo članki v različnih jezikih različno frekvenčno porazdelitev besed in črk?
 -	Ali lahko predvidimo jezik v katerem je bil članek napisan na podlagi zajetih podatkov?
 
 _______________
